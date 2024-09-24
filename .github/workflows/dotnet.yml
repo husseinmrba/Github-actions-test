@@ -45,8 +45,15 @@ jobs:
         $publishPath = './publish'
         $iisPath = 'C:\inetpub\wwwroot\github_action'
     
-        Write-Host "Stopping IIS application pool..."
-        Stop-WebAppPool -Name $siteName
+        Write-Host "Checking status of IIS application pool..."
+        $appPool = Get-WebAppPoolState -Name $siteName
+    
+        if ($appPool.value -eq 'Started') {
+            Write-Host "Stopping IIS application pool..."
+            Stop-WebAppPool -Name $siteName
+        } else {
+            Write-Host "IIS application pool is already stopped."
+        }
     
         Write-Host "Starting deployment to IIS..."
     
@@ -66,5 +73,6 @@ jobs:
         Start-WebAppPool -Name $siteName
         Write-Host "IIS application pool restarted successfully."
       shell: powershell  # استخدام Windows PowerShell
+
 
 
