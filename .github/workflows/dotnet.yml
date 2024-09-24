@@ -34,7 +34,7 @@ jobs:
         $iisPath = 'C:\inetpub\wwwroot\github_action'
 
         # تأكد من حذف الملفات السابقة
-        Remove-Item -Recurse -Force $iisPath\*
+        # Remove-Item -Recurse -Force $iisPath\*
 
         # نسخ الملفات الجديدة
         Copy-Item -Recurse -Force $publishPath\* $iisPath
