@@ -49,6 +49,7 @@ jobs:
         Stop-WebAppPool -Name $siteName
     
         Write-Host "Starting deployment to IIS..."
+    
         try {
             # تأكد من حذف الملفات السابقة
             Remove-Item -Recurse -Force $iisPath\*
@@ -65,4 +66,5 @@ jobs:
         Start-WebAppPool -Name $siteName
         Write-Host "IIS application pool restarted successfully."
       shell: powershell  # استخدام Windows PowerShell
+
 
