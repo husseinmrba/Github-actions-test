@@ -16,16 +16,28 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'  # تأكد من استخدام الإصدار الصحيح
+        dotnet-version: '8.0.8'  # تأكد من استخدام الإصدار الصحيح
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        dotnet restore
+        Write-Host "Dependencies restored successfully."
 
     - name: Build the project
-      run: dotnet build --configuration Release
+      run: |
+        dotnet build --configuration Release
+        Write-Host "Project built successfully."
 
     - name: Publish the project
-      run: dotnet publish --configuration Release --output ./publish
+      run: |
+        dotnet publish --configuration Release --output ./publish
+        Write-Host "Project published successfully to ./publish."
+
+    - name: List published files
+      run: |
+        Get-ChildItem -Recurse ./publish
+        Write-Host "Listed files in the publish directory."
+      shell: pwsh
 
     - name: Deploy to IIS
       run: |
@@ -33,12 +45,21 @@ jobs:
         $publishPath = './publish'
         $iisPath = 'C:\inetpub\wwwroot\github_action'
 
-        # تأكد من حذف الملفات السابقة
-        # Remove-Item -Recurse -Force $iisPath\*
+        Write-Host "Starting deployment to IIS..."
+
+        try {
+            # تأكد من حذف الملفات السابقة
+            Remove-Item -Recurse -Force $iisPath\*
+            Write-Host "Old files removed successfully."
+        } catch {
+            Write-Host "Error removing files: $_"
+        }
 
         # نسخ الملفات الجديدة
         Copy-Item -Recurse -Force $publishPath\* $iisPath
+        Write-Host "New files copied successfully."
 
         # إعادة تشغيل تطبيق IIS
         Restart-WebAppPool -Name $siteName
-      shell: pwsh  # استخدام PowerShell
+        Write-Host "IIS application pool restarted successfully."
+      shell: pwsh
