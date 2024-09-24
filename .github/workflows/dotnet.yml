@@ -44,9 +44,11 @@ jobs:
         $siteName = 'github_action'
         $publishPath = './publish'
         $iisPath = 'C:\inetpub\wwwroot\github_action'
-
+    
+        Write-Host "Stopping IIS application pool..."
+        Stop-WebAppPool -Name $siteName
+    
         Write-Host "Starting deployment to IIS..."
-
         try {
             # تأكد من حذف الملفات السابقة
             Remove-Item -Recurse -Force $iisPath\*
@@ -54,12 +56,13 @@ jobs:
         } catch {
             Write-Host "Error removing files: $_"
         }
-
+    
         # نسخ الملفات الجديدة
         Copy-Item -Recurse -Force $publishPath\* $iisPath
         Write-Host "New files copied successfully."
-
+    
         # إعادة تشغيل تطبيق IIS
-        Restart-WebAppPool -Name $siteName
+        Start-WebAppPool -Name $siteName
         Write-Host "IIS application pool restarted successfully."
-      shell: powershell
+      shell: powershell  # استخدام Windows PowerShell
+
