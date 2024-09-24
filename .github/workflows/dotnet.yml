@@ -37,7 +37,7 @@ jobs:
       run: |
         Get-ChildItem -Recurse ./publish
         Write-Host "Listed files in the publish directory."
-      shell: pwsh
+      shell: powershell
 
     - name: Deploy to IIS
       run: |
@@ -62,4 +62,4 @@ jobs:
         # إعادة تشغيل تطبيق IIS
         Restart-WebAppPool -Name $siteName
         Write-Host "IIS application pool restarted successfully."
-      shell: pwsh
+      shell: powershell
