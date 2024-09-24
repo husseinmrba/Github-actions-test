@@ -1,0 +1,44 @@
+name: Build and Deploy to IIS
+
+on:
+  push:
+    branches:
+      - main  # تأكد من استبدال هذا باسم الفرع الذي تريد استخدامه
+
+jobs:
+  build:
+    runs-on: self-hosted  # تشغيل الوظائف على GitHub Runner المحلي
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'  # تأكد من استخدام الإصدار الصحيح
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --configuration Release
+
+    - name: Publish the project
+      run: dotnet publish --configuration Release --output ./publish
+
+    - name: Deploy to IIS
+      run: |
+        $siteName = 'github_action'
+        $publishPath = './publish'
+        $iisPath = 'C:\inetpub\wwwroot\github_action'
+
+        # تأكد من حذف الملفات السابقة
+        Remove-Item -Recurse -Force $iisPath\*
+
+        # نسخ الملفات الجديدة
+        Copy-Item -Recurse -Force $publishPath\* $iisPath
+
+        # إعادة تشغيل تطبيق IIS
+        Restart-WebAppPool -Name $siteName
+      shell: pwsh  # استخدام PowerShell
