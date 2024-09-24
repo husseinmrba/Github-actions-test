@@ -3,7 +3,7 @@ name: Build and Deploy to IIS
 on:
   push:
     branches:
-      - main  # تأكد من استبدال هذا باسم الفرع الذي تريد استخدامه
+      - master  # تأكد من استبدال هذا باسم الفرع الذي تريد استخدامه
 
 jobs:
   build:
